@@ -588,7 +588,7 @@ canvas#sig{display:block;width:100%;height:190px;touch-action:none;cursor:crossh
    ===================================================================== */
 const CONFIG = {
   businessName : "True Wild Coastal",
-  operatorEmail: "waivers@truewildcoastal.com",  // signed waivers are sent here
+  operatorEmail: "waiver@truewildcoastal.com",  // signed waivers are sent here
 
   // ---- Supabase (recommended: central storage, dashboard, auto email) ----
   // Paste these from your Supabase project (Settings > API). The anon key is
@@ -622,6 +622,7 @@ function recToRow(rec){
     full_name:rec.fullName, dob:rec.dob, phone:rec.phone, email:rec.email, address:rec.address,
     emg_name:rec.emgName, emg_rel:rec.emgRel, emg_phone:rec.emgPhone,
     media:rec.media, minors:rec.minors, referral:rec.referral, newsletter:rec.newsletter,
+    ack_read:rec.ackRead, ack_age:rec.ackAge,
     printed_name:rec.printedName, signed_date:rec.signedDate,
     signature:rec.signature, pdf:rec.pdf
   };
@@ -632,6 +633,7 @@ function rowToRec(row){
     fullName:row.full_name, dob:row.dob, phone:row.phone, email:row.email, address:row.address,
     emgName:row.emg_name, emgRel:row.emg_rel, emgPhone:row.emg_phone,
     media:row.media, minors:row.minors||[], referral:row.referral, newsletter:row.newsletter,
+    ackRead:row.ack_read, ackAge:row.ack_age,
     printedName:row.printed_name, signedDate:row.signed_date,
     signature:row.signature, pdf:row.pdf
   };
@@ -794,6 +796,8 @@ form.addEventListener("submit", async e=>{
     minors: collectMinors(), printedName:g("printedName"), signedDate:g("signedDate"),
     referral: (function(){ const r=$("[name=referral]").value; return r==="Other" ? ("Other: "+(g("referralOther")||"unspecified")) : r; })(),
     newsletter: $("[name=newsletter]").checked,
+    ackRead: $("[name=ackRead]").checked,
+    ackAge: $("[name=ackAge]").checked,
     signature: Sig.dataUrl()
   };
 
@@ -802,8 +806,9 @@ form.addEventListener("submit", async e=>{
     rec.pdf = pdf.output("datauristring");
     lastRecord = rec;
     await DB.submit(rec);
-    // Supabase sends email server-side on insert; otherwise use Web3Forms
-    if (!USE_SB) emailCopy(rec).catch(()=>{});
+    // Web3Forms email (client side) fires whenever a key is set. If you use the
+    // Supabase edge function instead, leave web3formsKey blank to avoid duplicates.
+    if (CONFIG.web3formsKey) emailCopy(rec).catch(()=>{});
     const first = rec.fullName.split(" ")[0];
     const delivered = USE_SB || CONFIG.web3formsKey;
     $("#confirmMsg").textContent = delivered
@@ -912,7 +917,10 @@ function buildPDF(rec){
   p("This agreement is governed by the laws of British Columbia and the federal laws of Canada. Any dispute is subject to the exclusive jurisdiction of the courts of British Columbia.");
 
   h("Acknowledgment");
-  p("By signing below, the participant confirms they have read and understood this agreement, are agreeing freely, are 19 or older or a parent/guardian of a minor participant, and understand they are waiving significant legal rights including the right to sue for negligence.");
+  p("At the time of signing, the participant checked the following boxes to confirm their agreement:");
+  const box = on => on ? "[X]  " : "[  ]  ";
+  p(box(rec.ackRead)+"I have read and understood this entire agreement and am agreeing freely. I understand I am waiving significant legal rights, including the right to sue for negligence.",{bold:true});
+  p(box(rec.ackAge)+"I am 19 years of age or older. If any minors are listed above, I am their parent or legal guardian and I am signing on their behalf as well as my own.",{bold:true});
   if(rec.minors && rec.minors.length) p("This waiver is signed by "+rec.printedName+" on behalf of themselves and the following minor participant(s): "+rec.minors.join(", ")+". "+rec.printedName+" agrees to all terms of this agreement for each minor listed above.",{bold:true});
 
   need(120); y+=6;
@@ -951,6 +959,8 @@ async function emailCopy(rec){
   fd.append("Phone", rec.phone);
   fd.append("Emergency contact", `${rec.emgName} (${rec.emgRel||"n/a"}) ${rec.emgPhone}`);
   fd.append("Media consent", rec.media==="yes"?"Yes":"No (do not use image)");
+  fd.append("Agreed to terms", rec.ackRead?"Yes":"No");
+  fd.append("Confirmed 19+ or guardian", rec.ackAge?"Yes":"No");
   if(rec.minors && rec.minors.length) fd.append("Signing for minors", rec.minors.join(", "));
   fd.append("How did you hear", rec.referral||"Not provided");
   fd.append("Newsletter opt-in", rec.newsletter?"Yes":"No");
@@ -1050,6 +1060,8 @@ function openDetail(id){
     ["Email",r.email],["Phone",r.phone],["Date of birth",r.dob],["Address",r.address||"-"],
     ["Emergency",`${r.emgName} · ${r.emgRel||"-"} · ${r.emgPhone}`],
     ["Media consent",r.media==="yes"?"Yes":"No"],
+    ["Agreed to terms",r.ackRead?"Yes":"No"],
+    ["Confirmed 19+ or guardian",r.ackAge?"Yes":"No"],
     ["How did you hear",r.referral||"Not provided"],
     ["Newsletter",r.newsletter?"Yes":"No"],
     ...(r.minors&&r.minors.length?[["Signing for minors",r.minors.join(", ")]]:[])
@@ -1069,7 +1081,7 @@ async function delRec(id){
 
 $("#exportBtn").addEventListener("click",()=>{
   if(!cache.length){ toast("Nothing to export yet."); return; }
-  const cols=["fullName","email","phone","dob","address","emgName","emgRel","emgPhone","media","minors","referral","newsletter","printedName","signedDate"];
+  const cols=["fullName","email","phone","dob","address","emgName","emgRel","emgPhone","media","minors","referral","newsletter","ackRead","ackAge","printedName","signedDate"];
   const head=cols.join(",");
   const rows=cache.map(r=>cols.map(c=>{ const raw=Array.isArray(r[c])?r[c].join("; "):(r[c]==null?"":r[c]); return `"${String(raw).replace(/"/g,'""')}"`; }).join(","));
   const csv=[head,...rows].join("\n");

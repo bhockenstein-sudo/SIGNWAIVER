@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>True Wild Coastal Participant Waiver</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+/* =====================================================================
+   TRUE WILD COASTAL  ·  Digital Waiver
+   Palette: Deep Tidal ground, Amber Light accent, sea-foam text
+   Type: Playfair Display (display) / Inter (body + UI)
+   ===================================================================== */
+:root{
+  --tidal-abyss:#081f21;
+  --tidal:#0d2b2e;
+  --tidal-2:#12383c;
+  --tidal-3:#194a4e;
+  --amber:#e8a84c;
+  --amber-soft:#f0c07f;
+  --foam:#eef3f1;
+  --foam-dim:#a9c0bc;
+  --sea-glass:#7f9b97;
+  --line:rgba(233,168,76,0.22);
+  --line-soft:rgba(169,192,188,0.16);
+  --danger:#e07a5f;
+  --ok:#7fbf9a;
+  --radius:14px;
+  --maxw:760px;
+  --ease:cubic-bezier(.22,.61,.36,1);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  background:
+    radial-gradient(1200px 700px at 50% -10%, #143b3e 0%, rgba(20,59,62,0) 60%),
+    linear-gradient(180deg, var(--tidal) 0%, var(--tidal-abyss) 100%);
+  background-attachment:fixed;
+  color:var(--foam);
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+  min-height:100vh;
+}
+.serif{font-family:'Playfair Display',Georgia,serif}
+a{color:var(--amber);text-decoration:none}
+::selection{background:rgba(233,168,76,0.3)}
+
+/* ---------- shell ---------- */
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 22px}
+.view{display:none;animation:rise .6s var(--ease) both}
+.view.active{display:block}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.view,.view.active{animation:none}*{transition:none!important}}
+
+/* ---------- masthead ---------- */
+.mast{padding:56px 0 30px;text-align:center}
+.mark{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:14px}
+.mark svg{width:34px;height:34px;flex:none}
+.wordmark{
+  font-family:'Playfair Display',serif;font-weight:700;
+  letter-spacing:.14em;font-size:clamp(20px,4.6vw,30px);
+  text-transform:uppercase;color:var(--foam);
+}
+.tagline{
+  font-family:'Inter',sans-serif;font-weight:400;
+  letter-spacing:.42em;text-transform:uppercase;
+  font-size:11px;color:var(--amber);margin:0;
+}
+.mast .doc-title{
+  margin:26px auto 0;max-width:520px;
+  font-family:'Playfair Display',serif;font-weight:400;font-style:italic;
+  font-size:clamp(22px,5vw,30px);color:var(--foam);line-height:1.25;
+}
+.mast .lede{
+  margin:16px auto 0;max-width:520px;color:var(--foam-dim);
+  font-size:15px;
+}
+
+/* ---------- card / sections ---------- */
+.card{
+  background:linear-gradient(180deg, rgba(18,56,60,0.9), rgba(13,43,46,0.9));
+  border:1px solid var(--line-soft);
+  border-radius:var(--radius);
+  padding:30px 28px;
+  margin:20px 0;
+  box-shadow:0 24px 60px -30px rgba(0,0,0,0.7);
+  backdrop-filter:blur(3px);
+}
+.section-eyebrow{
+  display:flex;align-items:center;gap:12px;margin-bottom:18px;
+}
+.section-eyebrow .num{
+  font-family:'Playfair Display',serif;font-style:italic;
+  color:var(--amber);font-size:15px;min-width:26px;
+}
+.section-eyebrow h2{
+  margin:0;font-family:'Inter',sans-serif;font-weight:600;
+  font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--foam);
+}
+.section-eyebrow .rule{flex:1;height:1px;background:var(--line)}
+
+/* ---------- form fields ---------- */
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px 18px}
+.grid .full{grid-column:1 / -1}
+@media(max-width:560px){.grid{grid-template-columns:1fr}}
+.field label{
+  display:block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--sea-glass);margin-bottom:7px;font-weight:500;
+}
+.field label .req{color:var(--amber)}
+.field input, .field select{
+  width:100%;background:rgba(8,31,33,0.6);
+  border:1px solid var(--line-soft);border-radius:10px;
+  color:var(--foam);font-family:inherit;font-size:16px;
+  padding:13px 14px;transition:border-color .2s var(--ease), box-shadow .2s var(--ease);
+}
+.field input::placeholder{color:#5f7a76}
+.field input:focus, .field select:focus{
+  outline:none;border-color:var(--amber);
+  box-shadow:0 0 0 3px rgba(233,168,76,0.14);
+}
+.field.invalid input, .field.invalid select{border-color:var(--danger)}
+.field .err{color:var(--danger);font-size:12px;margin-top:6px;display:none}
+.field.invalid .err{display:block}
+select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23e8a84c' d='M6 8L0 0h12z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center}
+.minor-row{display:flex;gap:10px;align-items:center;margin-bottom:10px}
+.minor-row input{
+  flex:1;background:rgba(8,31,33,0.6);border:1px solid var(--line-soft);border-radius:10px;
+  color:var(--foam);font-family:inherit;font-size:16px;padding:13px 14px;
+  transition:border-color .2s var(--ease), box-shadow .2s var(--ease);
+}
+.minor-row input:focus{outline:none;border-color:var(--amber);box-shadow:0 0 0 3px rgba(233,168,76,0.14)}
+.minor-remove{
+  flex:none;width:46px;height:48px;background:transparent;border:1px solid var(--line-soft);
+  border-radius:10px;color:var(--sea-glass);font-size:22px;line-height:1;cursor:pointer;
+  transition:border-color .18s,color .18s;
+}
+.minor-remove:hover{border-color:var(--danger);color:var(--danger)}
+
+/* ---------- legal copy ---------- */
+.legal h3{
+  font-family:'Playfair Display',serif;font-weight:600;
+  font-size:18px;color:var(--foam);margin:22px 0 8px;
+}
+.legal h3:first-child{margin-top:0}
+.legal p{color:var(--foam-dim);font-size:14.5px;margin:0 0 12px}
+.legal p strong{color:var(--foam)}
+.legal ul{margin:0 0 14px;padding-left:0;list-style:none}
+.legal li{
+  color:var(--foam-dim);font-size:14.5px;position:relative;
+  padding-left:22px;margin-bottom:7px;
+}
+.legal li::before{
+  content:"";position:absolute;left:2px;top:9px;width:7px;height:7px;
+  border:1px solid var(--amber);transform:rotate(45deg);
+}
+
+/* ---------- consent + acknowledgments ---------- */
+.choice{
+  display:flex;gap:12px;align-items:flex-start;
+  padding:14px 16px;border:1px solid var(--line-soft);border-radius:10px;
+  margin-bottom:10px;cursor:pointer;transition:border-color .2s, background .2s;
+}
+.choice:hover{border-color:var(--line);background:rgba(8,31,33,0.35)}
+.choice input{margin-top:3px;width:19px;height:19px;accent-color:var(--amber);flex:none;cursor:pointer}
+.choice .ctext{font-size:14.5px;color:var(--foam-dim)}
+.choice .ctext b{color:var(--foam);font-weight:600}
+.consent-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:560px){.consent-row{grid-template-columns:1fr}}
+
+/* ---------- signature ---------- */
+.sig-frame{position:relative}
+.sig-pad-wrap{
+  position:relative;border:1px solid var(--line);border-radius:12px;touch-action:none;
+  background:
+    linear-gradient(180deg, rgba(238,243,241,0.97), rgba(238,243,241,0.92));
+  overflow:hidden;transition:box-shadow .25s var(--ease), border-color .25s;
+}
+.sig-pad-wrap.focus{border-color:var(--amber);box-shadow:0 0 0 3px rgba(233,168,76,0.18)}
+.sig-pad-wrap.invalid{border-color:var(--danger)}
+canvas#sig{display:block;width:100%;height:190px;touch-action:none;cursor:crosshair}
+.sig-baseline{
+  position:absolute;left:20px;right:20px;bottom:44px;height:1px;
+  background:repeating-linear-gradient(90deg,#9fb0ad 0 8px,transparent 8px 16px);
+  pointer-events:none;
+}
+.sig-hint{
+  position:absolute;left:22px;bottom:20px;color:#5f7a76;font-size:12px;
+  letter-spacing:.12em;text-transform:uppercase;pointer-events:none;
+  transition:opacity .3s;
+}
+.sig-clear{
+  position:absolute;top:12px;right:12px;background:rgba(8,31,33,0.85);
+  color:var(--foam);border:1px solid var(--line-soft);border-radius:8px;
+  font-family:inherit;font-size:12px;letter-spacing:.08em;padding:7px 12px;cursor:pointer;
+  transition:border-color .2s,color .2s;
+}
+.sig-clear:hover{border-color:var(--amber);color:var(--amber)}
+
+/* ---------- buttons ---------- */
+.btn{
+  font-family:inherit;font-size:15px;font-weight:600;letter-spacing:.04em;
+  border-radius:11px;padding:15px 26px;cursor:pointer;border:1px solid transparent;
+  transition:transform .15s var(--ease), box-shadow .25s var(--ease), background .2s;
+}
+.btn:active{transform:translateY(1px)}
+.btn-primary{
+  background:linear-gradient(180deg,var(--amber),#d8993c);color:#1a1205;
+  box-shadow:0 14px 34px -14px rgba(233,168,76,0.7);width:100%;
+}
+.btn-primary:hover{box-shadow:0 18px 42px -14px rgba(233,168,76,0.85)}
+.btn-primary:disabled{opacity:.55;cursor:not-allowed;box-shadow:none}
+.btn-ghost{
+  background:transparent;color:var(--foam);border-color:var(--line);
+}
+.btn-ghost:hover{border-color:var(--amber);color:var(--amber)}
+.submit-note{text-align:center;color:var(--sea-glass);font-size:12.5px;margin-top:14px}
+
+/* ---------- confirm view ---------- */
+.confirm-wrap{text-align:center;padding:40px 0 60px}
+.confirm-seal{
+  width:78px;height:78px;margin:0 auto 26px;border-radius:50%;
+  border:1px solid var(--amber);display:flex;align-items:center;justify-content:center;
+  animation:seal .7s var(--ease) both;
+}
+@keyframes seal{from{transform:scale(.7);opacity:0}to{transform:none;opacity:1}}
+.confirm-wrap h2{font-family:'Playfair Display',serif;font-weight:600;font-size:30px;margin:0 0 12px}
+.confirm-wrap p{color:var(--foam-dim);max-width:440px;margin:0 auto 8px}
+.confirm-actions{display:flex;gap:12px;justify-content:center;margin-top:30px;flex-wrap:wrap}
+.confirm-actions .btn{width:auto}
+
+/* ---------- footer ---------- */
+.foot{
+  text-align:center;padding:34px 0 46px;color:var(--sea-glass);font-size:12px;
+  border-top:1px solid var(--line-soft);margin-top:26px;
+}
+.foot a{color:var(--sea-glass);border-bottom:1px dotted transparent}
+.foot a:hover{color:var(--amber);border-bottom-color:var(--amber)}
+
+/* ---------- toast ---------- */
+.toast{
+  position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(30px);
+  background:var(--tidal-3);border:1px solid var(--line);color:var(--foam);
+  padding:13px 20px;border-radius:11px;font-size:14px;opacity:0;pointer-events:none;
+  transition:opacity .3s,transform .3s;z-index:60;max-width:90vw;box-shadow:0 20px 40px -20px #000;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ---------- modal ---------- */
+.modal-bg{
+  position:fixed;inset:0;background:rgba(4,16,17,0.72);backdrop-filter:blur(4px);
+  display:none;align-items:center;justify-content:center;z-index:70;padding:20px;
+}
+.modal-bg.show{display:flex}
+.modal{
+  background:linear-gradient(180deg,var(--tidal-2),var(--tidal));
+  border:1px solid var(--line);border-radius:16px;padding:30px;max-width:400px;width:100%;
+  animation:rise .4s var(--ease) both;
+}
+.modal h3{font-family:'Playfair Display',serif;margin:0 0 6px;font-size:22px}
+.modal p{color:var(--foam-dim);font-size:14px;margin:0 0 18px}
+
+/* ---------- admin dashboard ---------- */
+.admin-top{
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  padding:36px 0 20px;flex-wrap:wrap;
+}
+.admin-top .title{font-family:'Playfair Display',serif;font-size:26px}
+.admin-top .title small{
+  display:block;font-family:'Inter';font-size:11px;letter-spacing:.28em;
+  text-transform:uppercase;color:var(--amber);margin-top:4px;
+}
+.stat-row{display:flex;gap:14px;margin:0 0 22px;flex-wrap:wrap}
+.stat{
+  flex:1;min-width:130px;background:rgba(18,56,60,0.7);border:1px solid var(--line-soft);
+  border-radius:12px;padding:16px 18px;
+}
+.stat .n{font-family:'Playfair Display',serif;font-size:30px;color:var(--amber);line-height:1}
+.stat .l{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--sea-glass);margin-top:6px}
+.admin-controls{display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+.admin-controls input{
+  flex:1;min-width:180px;background:rgba(8,31,33,0.6);border:1px solid var(--line-soft);
+  border-radius:10px;color:var(--foam);font-family:inherit;font-size:15px;padding:12px 14px;
+}
+.admin-controls input:focus{outline:none;border-color:var(--amber)}
+.tbl{width:100%;border-collapse:collapse;font-size:14px}
+.tbl thead th{
+  text-align:left;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--sea-glass);font-weight:600;padding:10px 12px;border-bottom:1px solid var(--line);
+}
+.tbl tbody td{padding:13px 12px;border-bottom:1px solid var(--line-soft);color:var(--foam-dim);vertical-align:middle}
+.tbl tbody tr{transition:background .15s}
+.tbl tbody tr:hover{background:rgba(233,168,76,0.05)}
+.tbl .nm{color:var(--foam);font-weight:500}
+.pill{display:inline-block;font-size:11px;padding:3px 9px;border-radius:20px;letter-spacing:.04em}
+.pill.yes{background:rgba(127,191,154,0.16);color:var(--ok);border:1px solid rgba(127,191,154,0.3)}
+.pill.no{background:rgba(224,122,95,0.14);color:var(--danger);border:1px solid rgba(224,122,95,0.3)}
+.row-act{display:flex;gap:8px}
+.icon-btn{
+  background:transparent;border:1px solid var(--line-soft);border-radius:8px;color:var(--foam-dim);
+  padding:7px 10px;cursor:pointer;font-family:inherit;font-size:12px;transition:all .18s;
+}
+.icon-btn:hover{border-color:var(--amber);color:var(--amber)}
+.icon-btn.danger:hover{border-color:var(--danger);color:var(--danger)}
+.empty{
+  text-align:center;padding:60px 20px;color:var(--sea-glass);
+}
+.empty .serif{font-size:22px;color:var(--foam-dim);display:block;margin-bottom:8px}
+.tbl-scroll{overflow-x:auto;border-radius:12px}
+@media(max-width:620px){
+  .hide-sm{display:none}
+}
+
+/* ---------- detail drawer ---------- */
+.detail dl{display:grid;grid-template-columns:150px 1fr;gap:8px 16px;margin:0 0 18px;font-size:14px}
+.detail dt{color:var(--sea-glass);font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding-top:2px}
+.detail dd{margin:0;color:var(--foam)}
+.detail .sig-preview{background:#eef3f1;border-radius:10px;padding:10px;max-width:320px}
+.detail .sig-preview img{width:100%;display:block}
+.mono{font-variant-numeric:tabular-nums}
+.config-warn{
+  background:rgba(224,122,95,0.1);border:1px solid rgba(224,122,95,0.3);border-radius:10px;
+  padding:12px 16px;font-size:13px;color:var(--amber-soft);margin:16px 0;
+}
+.config-warn b{color:var(--foam)}
+</style>
+</head>
+<body>
+
+<!-- ============ SIGN VIEW ============ -->
+<div id="view-sign" class="view active">
+  <header class="mast wrap">
+    <div class="mark">
+      <svg viewBox="0 0 40 40" fill="none" aria-hidden="true">
+        <path d="M2 25c5 0 5-5 10-5s5 5 10 5 5-5 10-5 5 5 6 5" stroke="#e8a84c" stroke-width="1.6" stroke-linecap="round"/>
+        <path d="M2 31c5 0 5-4 10-4s5 4 10 4 5-4 10-4 5 4 6 4" stroke="#7f9b97" stroke-width="1.4" stroke-linecap="round"/>
+        <circle cx="20" cy="12" r="3.4" stroke="#e8a84c" stroke-width="1.6"/>
+      </svg>
+      <span class="wordmark">True Wild Coastal</span>
+    </div>
+    <p class="tagline">Nature, Unfiltered.</p>
+    <h1 class="doc-title serif">Before we cast off, a few things to acknowledge.</h1>
+    <p class="lede">This waiver covers the risks, releases, and media consent for your expedition on Howe Sound. Read it, sign it, and you will get your own copy by email.</p>
+  </header>
+
+  <main class="wrap">
+    <form id="waiver-form" novalidate>
+
+      <!-- participant -->
+      <section class="card">
+        <div class="section-eyebrow"><span class="num serif">i</span><h2>Participant</h2><span class="rule"></span></div>
+        <div class="grid">
+          <div class="field full"><label>Full name <span class="req">*</span></label><input name="fullName" autocomplete="name" placeholder="First and last"/><div class="err">Please enter your name.</div></div>
+          <div class="field"><label>Date of birth <span class="req">*</span></label><input name="dob" type="date"/><div class="err">Required.</div></div>
+          <div class="field"><label>Phone <span class="req">*</span></label><input name="phone" type="tel" autocomplete="tel" placeholder="(000) 000-0000"/><div class="err">Required.</div></div>
+          <div class="field full"><label>Email <span class="req">*</span></label><input name="email" type="email" autocomplete="email" placeholder="you@email.com"/><div class="err">Enter a valid email so we can send your copy.</div></div>
+          <div class="field full"><label>Address</label><input name="address" autocomplete="street-address" placeholder="Street, city, province, postal code"/></div>
+        </div>
+      </section>
+
+      <!-- emergency -->
+      <section class="card">
+        <div class="section-eyebrow"><span class="num serif">ii</span><h2>Emergency contact</h2><span class="rule"></span></div>
+        <div class="grid">
+          <div class="field"><label>Name <span class="req">*</span></label><input name="emgName" placeholder="Who we call"/><div class="err">Required.</div></div>
+          <div class="field"><label>Relationship</label><input name="emgRel" placeholder="e.g. Partner, parent"/></div>
+          <div class="field full"><label>Phone <span class="req">*</span></label><input name="emgPhone" type="tel" placeholder="(000) 000-0000"/><div class="err">Required.</div></div>
+        </div>
+      </section>
+
+      <!-- the agreement -->
+      <section class="card legal">
+        <div class="section-eyebrow"><span class="num serif">iii</span><h2>The agreement</h2><span class="rule"></span></div>
+
+        <h3>What we do out there</h3>
+        <p>True Wild Coastal runs private marine expeditions on Howe Sound and the surrounding coastal waters from Squamish, BC. Activities may include wildlife and whale watching, photography, fishing charters, freediving, spearfishing, and kayaking, aboard a 20-foot welded aluminum centre console vessel in open coastal waters.</p>
+
+        <h3>Assumption of risk</h3>
+        <p>I understand that being on the water carries inherent risks, dangers, and hazards that cannot be eliminated, including:</p>
+        <ul>
+          <li>Rough, unpredictable, or rapidly changing sea and weather conditions</li>
+          <li>Capsizing, swamping, or falling overboard</li>
+          <li>Contact with marine wildlife such as whales, seals, and sea lions</li>
+          <li>Hypothermia, cold water exposure, and drowning</li>
+          <li>Injury from vessel motion, equipment, or gear</li>
+          <li>Remote locations with limited access to emergency services</li>
+          <li>Risks specific to freediving, spearfishing, or water entry, where applicable</li>
+          <li>Equipment failure or malfunction</li>
+        </ul>
+        <p><strong>I freely and voluntarily accept and assume all such risks, both known and unknown, arising from my participation.</strong></p>
+
+        <h3>Release of liability and waiver of claims</h3>
+        <p>In consideration of being permitted to participate, I, on behalf of myself, my heirs, executors, administrators, and assigns, release, waive, discharge, and agree not to sue True Wild Coastal, its owners, guides, crew, employees, agents, and contractors (the "Released Parties") from any and all liability, claims, demands, or causes of action for any loss, damage, injury, or death sustained while participating, whether caused by the negligence of the Released Parties or otherwise. I understand this release includes claims based on negligence and that I am giving up substantial legal rights by agreeing.</p>
+
+        <h3>Indemnification</h3>
+        <p>I agree to indemnify and hold harmless the Released Parties from any loss, liability, damage, cost, or expense, including legal fees, they may incur due to my participation, including claims brought by third parties arising from my conduct.</p>
+
+        <h3>My responsibilities</h3>
+        <ul>
+          <li>Follow all safety instructions and directions from the guide at all times</li>
+          <li>Wear a personal flotation device when instructed</li>
+          <li>Disclose any medical conditions, allergies, medications, or limitations that may affect my participation</li>
+          <li>Behave responsibly toward myself, other participants, wildlife, and the vessel</li>
+          <li>Comply with all federal and provincial regulations, including Transport Canada requirements and the Species at Risk Act</li>
+        </ul>
+
+        <h3>Governing law</h3>
+        <p>This agreement is governed by the laws of British Columbia and the federal laws of Canada. Any dispute is subject to the exclusive jurisdiction of the courts of British Columbia.</p>
+      </section>
+
+      <!-- media consent -->
+      <section class="card">
+        <div class="section-eyebrow"><span class="num serif">iv</span><h2>Media and photography</h2><span class="rule"></span></div>
+        <p style="color:var(--foam-dim);font-size:14.5px;margin:0 0 16px">We often photograph and film on the water, and we may use those images for marketing and social media. If you would rather not appear, just check the box below.</p>
+        <label class="choice"><input type="checkbox" name="mediaOptOut"/><span class="ctext"><b>Please do not use my image.</b> I would rather True Wild Coastal not use photos or video of me for marketing or promotion.</span></label>
+        <p style="color:var(--sea-glass);font-size:12.5px;margin:14px 0 0">Either way, I understand expedition footage may be used for documentary, editorial, or film work, and my participation may be captured incidentally. I waive claims related to that incidental capture.</p>
+      </section>
+
+      <!-- how did you hear -->
+      <section class="card">
+        <div class="section-eyebrow"><span class="num serif">v</span><h2>How did you find us</h2><span class="rule"></span></div>
+        <div class="field">
+          <label>How did you hear about True Wild Coastal?</label>
+          <select name="referral" id="referral">
+            <option value="">Select one</option>
+            <option>Web search</option>
+            <option>Instagram</option>
+            <option>Facebook</option>
+            <option>Tourism Squamish</option>
+            <option>Newspaper or print</option>
+            <option>Friend or word of mouth</option>
+            <option>Returning guest</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="field" id="referralOtherWrap" style="display:none;margin-top:14px">
+          <label>Tell us a little more</label>
+          <input name="referralOther" placeholder="Where did you hear about us?"/>
+        </div>
+      </section>
+
+      <!-- acknowledgment + signature -->
+      <section class="card">
+        <div class="section-eyebrow"><span class="num serif">vi</span><h2>Acknowledge and sign</h2><span class="rule"></span></div>
+
+        <label class="choice"><input type="checkbox" name="ackRead"/><span class="ctext">I have read this entire agreement, understand it, and I am agreeing freely. I understand I am waiving significant legal rights, including the right to sue for negligence.</span></label>
+        <label class="choice"><input type="checkbox" name="ackAge"/><span class="ctext">I am 19 years of age or older. If I have listed any minors below, I am their parent or legal guardian and I am signing this waiver on their behalf as well as my own.</span></label>
+
+        <div class="minors" style="margin:20px 0 0">
+          <label style="display:block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--sea-glass);margin-bottom:7px;font-weight:500">Minors you are signing for</label>
+          <p style="color:var(--foam-dim);font-size:13.5px;margin:0 0 12px">If you are a parent or legal guardian bringing children, add each minor's full name. Your signature below applies to you and to every minor listed here. Leave this empty if you are signing only for yourself.</p>
+          <div id="minorRows"></div>
+          <button type="button" class="btn btn-ghost" id="addMinor" style="width:auto;padding:11px 18px;font-size:13px;margin-top:4px">Add a minor</button>
+        </div>
+
+        <div class="field sig-frame" style="margin-top:22px">
+          <label>Signature <span class="req">*</span></label>
+          <div class="sig-pad-wrap" id="sigWrap">
+            <canvas id="sig"></canvas>
+            <div class="sig-baseline"></div>
+            <span class="sig-hint" id="sigHint">Sign here with your finger or mouse</span>
+            <button type="button" class="sig-clear" id="sigClear">Clear</button>
+          </div>
+          <div class="err" id="sigErr">Please add your signature.</div>
+        </div>
+
+        <div class="grid" style="margin-top:18px">
+          <div class="field"><label>Printed name <span class="req">*</span></label><input name="printedName" placeholder="Type your name"/><div class="err">Required.</div></div>
+          <div class="field"><label>Date signed</label><input name="signedDate" type="date" readonly/></div>
+        </div>
+      </section>
+
+      <!-- newsletter -->
+      <section class="card">
+        <div class="section-eyebrow"><span class="num serif">vii</span><h2>Stay in the loop</h2><span class="rule"></span></div>
+        <p style="color:var(--foam-dim);font-size:14.5px;margin:0 0 16px">Once a month we share where the season is taking us. Whales returning, kelp forests waking up, and open dates on the water. No noise, just the good stuff.</p>
+        <label class="choice"><input type="checkbox" name="newsletter"/><span class="ctext"><b>Yes, send me the monthly newsletter.</b> I would like occasional updates from True Wild Coastal at the email I provided above.</span></label>
+      </section>
+
+      <div style="margin:6px 0 0">
+        <button type="submit" class="btn btn-primary" id="submitBtn">Sign and submit waiver</button>
+        <p class="submit-note">Your signed waiver will be sent to True Wild Coastal. You can download your own copy on the next screen.</p>
+      </div>
+    </form>
+  </main>
+
+  <footer class="foot wrap">
+    True Wild Coastal &nbsp;·&nbsp; Squamish, BC &nbsp;·&nbsp; <a href="https://truewildcoastal.com" target="_blank" rel="noopener">truewildcoastal.com</a><br/>
+    <a href="#" id="staffLink" style="margin-top:8px;display:inline-block">Staff access</a>
+  </footer>
+</div>
+
+<!-- ============ CONFIRM VIEW ============ -->
+<div id="view-confirm" class="view">
+  <div class="wrap confirm-wrap">
+    <div class="confirm-seal">
+      <svg width="34" height="34" viewBox="0 0 34 34" fill="none"><path d="M7 17.5l6.5 6.5L27 10" stroke="#e8a84c" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <h2 class="serif">You are all set.</h2>
+    <p id="confirmMsg">Thank you. Your signed waiver has been recorded.</p>
+    <p style="color:var(--sea-glass);font-size:13px">Keep a copy for your records below.</p>
+    <div class="confirm-actions">
+      <button class="btn btn-primary" id="dlBtn" style="max-width:280px">Download your copy (PDF)</button>
+      <button class="btn btn-ghost" id="doneBtn">Sign another</button>
+    </div>
+  </div>
+  <footer class="foot wrap" style="margin-top:40px">True Wild Coastal &nbsp;·&nbsp; Nature, Unfiltered.</footer>
+</div>
+
+<!-- ============ ADMIN VIEW ============ -->
+<div id="view-admin" class="view">
+  <div class="wrap" style="max-width:1000px">
+    <div class="admin-top">
+      <div class="title serif">Waivers<small>True Wild Coastal · dashboard</small></div>
+      <div style="display:flex;gap:10px">
+        <button class="btn btn-ghost" id="exportBtn" style="padding:11px 18px;font-size:13px">Export CSV</button>
+        <button class="btn btn-ghost" id="signViewBtn" style="padding:11px 18px;font-size:13px">Sign view</button>
+      </div>
+    </div>
+
+    <div id="configWarn" class="config-warn" style="display:none"></div>
+
+    <div class="stat-row">
+      <div class="stat"><div class="n" id="statTotal">0</div><div class="l">Total signed</div></div>
+      <div class="stat"><div class="n" id="statMedia">0</div><div class="l">Media consent</div></div>
+      <div class="stat"><div class="n" id="statRecent">0</div><div class="l">Last 7 days</div></div>
+    </div>
+
+    <div class="admin-controls">
+      <input id="search" placeholder="Search by name or email"/>
+    </div>
+
+    <div class="tbl-scroll">
+      <table class="tbl">
+        <thead><tr>
+          <th>Participant</th><th class="hide-sm">Signed</th><th>Media</th><th></th>
+        </tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+    <div id="emptyState" class="empty" style="display:none">
+      <span class="serif">No waivers yet.</span>
+      Signed waivers will appear here as guests complete them.
+    </div>
+  </div>
+  <footer class="foot wrap" style="max-width:1000px;margin-top:40px">True Wild Coastal &nbsp;·&nbsp; Stored on this device. See setup notes for cloud sync.</footer>
+</div>
+
+<!-- ============ DETAIL MODAL ============ -->
+<div class="modal-bg" id="detailBg">
+  <div class="modal detail" style="max-width:520px;max-height:85vh;overflow:auto">
+    <h3 class="serif" id="detailName">Participant</h3>
+    <p id="detailWhen" style="margin-bottom:20px"></p>
+    <dl id="detailList"></dl>
+    <div id="detailSig"></div>
+    <div style="display:flex;gap:10px;margin-top:22px;flex-wrap:wrap">
+      <button class="btn btn-primary" id="detailDl" style="flex:1;min-width:150px">Download PDF</button>
+      <button class="btn btn-ghost" id="detailClose" style="flex:1;min-width:120px">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ PASSWORD MODAL ============ -->
+<div class="modal-bg" id="pwBg">
+  <div class="modal">
+    <h3 class="serif">Staff access</h3>
+    <p id="pwPrompt">Enter the dashboard password to view signed waivers.</p>
+    <div class="field" id="pwEmailWrap" style="display:none;margin-bottom:12px"><input id="pwEmail" type="email" placeholder="Email" autocomplete="username" style="width:100%;background:rgba(8,31,33,0.6);border:1px solid var(--line-soft);border-radius:10px;color:var(--foam);font-family:inherit;font-size:16px;padding:13px 14px"/></div>
+    <div class="field"><input id="pwInput" type="password" placeholder="Password" autocomplete="current-password" style="width:100%;background:rgba(8,31,33,0.6);border:1px solid var(--line-soft);border-radius:10px;color:var(--foam);font-family:inherit;font-size:16px;padding:13px 14px"/><div class="err" id="pwErr" style="display:none">Incorrect password.</div></div>
+    <div style="display:flex;gap:10px;margin-top:18px">
+      <button class="btn btn-primary" id="pwGo" style="flex:1">Enter</button>
+      <button class="btn btn-ghost" id="pwCancel" style="flex:1">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* =====================================================================
+   CONFIG  ·  edit these values, then deploy
+   ===================================================================== */
+const CONFIG = {
+  businessName : "True Wild Coastal",
+  operatorEmail: "waivers@truewildcoastal.com",  // signed waivers are sent here
+
+  // ---- Supabase (recommended: central storage, dashboard, auto email) ----
+  // Paste these from your Supabase project (Settings > API). The anon key is
+  // safe to expose in the browser; it is protected by row level security.
+  supabaseUrl    : "",   // e.g. https://abcdefgh.supabase.co
+  supabaseAnonKey: "",
+
+  // ---- Fallback only (used when Supabase above is left blank) ----
+  adminPassword: "howesound",   // local dashboard password
+  web3formsKey : ""             // web3forms.com key for local email
+};
+/* ===================================================================== */
+
+const $  = (s, r=document) => r.querySelector(s);
+const $$ = (s, r=document) => [...r.querySelectorAll(s)];
+
+/* ---------- Supabase client (only if configured and library loaded) ---------- */
+let sb = null;
+try{
+  if (CONFIG.supabaseUrl && CONFIG.supabaseAnonKey && window.supabase && window.supabase.createClient){
+    sb = window.supabase.createClient(CONFIG.supabaseUrl, CONFIG.supabaseAnonKey);
+  }
+}catch(e){ sb = null; }
+const USE_SB = !!sb;
+
+/* ---------- storage layer ----------
+   Supabase when configured (central, multi-device, auth-protected reads);
+   otherwise window.storage in-app, or localStorage on your own host.        */
+function recToRow(rec){
+  return {
+    full_name:rec.fullName, dob:rec.dob, phone:rec.phone, email:rec.email, address:rec.address,
+    emg_name:rec.emgName, emg_rel:rec.emgRel, emg_phone:rec.emgPhone,
+    media:rec.media, minors:rec.minors, referral:rec.referral, newsletter:rec.newsletter,
+    printed_name:rec.printedName, signed_date:rec.signedDate,
+    signature:rec.signature, pdf:rec.pdf
+  };
+}
+function rowToRec(row){
+  return {
+    id:row.id, submittedAt:row.created_at?new Date(row.created_at).getTime():Date.now(),
+    fullName:row.full_name, dob:row.dob, phone:row.phone, email:row.email, address:row.address,
+    emgName:row.emg_name, emgRel:row.emg_rel, emgPhone:row.emg_phone,
+    media:row.media, minors:row.minors||[], referral:row.referral, newsletter:row.newsletter,
+    printedName:row.printed_name, signedDate:row.signed_date,
+    signature:row.signature, pdf:row.pdf
+  };
+}
+const DB = (() => {
+  const cloud = (typeof window !== "undefined" && window.storage && typeof window.storage.get === "function");
+  const P = "waiver:";
+  const strip = k => k.startsWith(P) ? k.slice(P.length) : k.replace("tw_"+P, "");
+  return {
+    cloud, supabase: USE_SB,
+    // guest submission (anon insert on Supabase, local put otherwise)
+    async submit(rec){
+      if (USE_SB){
+        const { error } = await sb.from("waivers").insert(recToRow(rec));
+        if (error) throw error;
+        return;
+      }
+      const v = JSON.stringify(rec);
+      if (cloud) await window.storage.set(P+rec.id, v, true);
+      else localStorage.setItem("tw_"+P+rec.id, v);
+    },
+    async get(id){
+      try{
+        if (cloud){ const r = await window.storage.get(P+id, true); return r ? JSON.parse(r.value) : null; }
+        const v = localStorage.getItem("tw_"+P+id); return v ? JSON.parse(v) : null;
+      }catch(e){ return null; }
+    },
+    // staff read (authenticated select on Supabase)
+    async all(){
+      if (USE_SB){
+        const { data, error } = await sb.from("waivers").select("*").order("created_at",{ascending:false});
+        if (error) throw error;
+        return (data||[]).map(rowToRec);
+      }
+      let ids = [];
+      if (cloud){
+        try{ const r = await window.storage.list(P, true); ids = (r&&r.keys?r.keys:[]).map(strip); }catch(e){ ids=[]; }
+      } else {
+        for (let i=0;i<localStorage.length;i++){ const k=localStorage.key(i); if(k&&k.startsWith("tw_"+P)) ids.push(strip(k)); }
+      }
+      const out = [];
+      for (const id of ids){ const it = await this.get(id); if (it) out.push(it); }
+      out.sort((a,b)=>(b.submittedAt||0)-(a.submittedAt||0));
+      return out;
+    },
+    async remove(id){
+      if (USE_SB){ const { error } = await sb.from("waivers").delete().eq("id", id); if (error) throw error; return; }
+      if (cloud){ try{ await window.storage.delete(P+id, true); }catch(e){} }
+      else localStorage.removeItem("tw_"+P+id);
+    }
+  };
+})();
+
+/* ---------- view routing ---------- */
+function show(view){
+  $$(".view").forEach(v=>v.classList.remove("active"));
+  $("#view-"+view).classList.add("active");
+  window.scrollTo({top:0,behavior:"instant"});
+}
+
+/* ---------- toast ---------- */
+let toastT;
+function toast(msg){
+  const t = $("#toast"); t.textContent = msg; t.classList.add("show");
+  clearTimeout(toastT); toastT = setTimeout(()=>t.classList.remove("show"), 3200);
+}
+
+/* ---------- signature pad ---------- */
+const Sig = (() => {
+  const canvas = $("#sig"), ctx = canvas.getContext("2d");
+  let drawing=false, dirty=false, last=null;
+  function resize(){
+    const r = canvas.getBoundingClientRect(), dpr = window.devicePixelRatio||1;
+    const data = dirty ? canvas.toDataURL() : null;
+    canvas.width = r.width*dpr; canvas.height = r.height*dpr;
+    ctx.scale(dpr,dpr); ctx.lineJoin="round"; ctx.lineCap="round";
+    ctx.strokeStyle="#0d2b2e"; ctx.lineWidth=2.2;
+    if (data){ const img=new Image(); img.onload=()=>ctx.drawImage(img,0,0,r.width,r.height); img.src=data; }
+  }
+  function pos(e){
+    const r = canvas.getBoundingClientRect();
+    const p = e.touches ? e.touches[0] : e;
+    return { x:p.clientX-r.left, y:p.clientY-r.top };
+  }
+  function start(e){ e.preventDefault(); drawing=true; last=pos(e); $("#sigHint").style.opacity=0; $("#sigWrap").classList.add("focus"); $("#sigWrap").classList.remove("invalid"); }
+  function move(e){ if(!drawing) return; e.preventDefault(); const p=pos(e); ctx.beginPath(); ctx.moveTo(last.x,last.y); ctx.lineTo(p.x,p.y); ctx.stroke(); last=p; dirty=true; }
+  function end(){ drawing=false; $("#sigWrap").classList.remove("focus"); }
+  canvas.addEventListener("pointerdown", start);
+  canvas.addEventListener("pointermove", move);
+  window.addEventListener("pointerup", end);
+  // stop the page from scrolling while a finger is drawing in the box
+  canvas.addEventListener("touchstart", e=>e.preventDefault(), {passive:false});
+  canvas.addEventListener("touchmove",  e=>e.preventDefault(), {passive:false});
+  $("#sigClear").addEventListener("click", ()=>{ ctx.clearRect(0,0,canvas.width,canvas.height); dirty=false; $("#sigHint").style.opacity=1; });
+  window.addEventListener("resize", ()=>{ clearTimeout(window._sz); window._sz=setTimeout(resize,150); });
+  setTimeout(resize, 60);
+  return {
+    isSigned:()=>dirty,
+    dataUrl:()=>canvas.toDataURL("image/png"),
+    reset(){ ctx.clearRect(0,0,canvas.width,canvas.height); dirty=false; $("#sigHint").style.opacity=1; }
+  };
+})();
+
+/* ---------- set today ---------- */
+(function(){ const t=new Date().toISOString().slice(0,10); $("[name=signedDate]").value=t; })();
+
+/* ---------- mirror name to printed name ---------- */
+$("[name=fullName]").addEventListener("input", e=>{
+  const p=$("[name=printedName]"); if(!p.dataset.touched) p.value=e.target.value;
+});
+$("[name=printedName]").addEventListener("input", e=>{ e.target.dataset.touched="1"; });
+
+/* ---------- minors (sign for one or more children) ---------- */
+function addMinorRow(value=""){
+  const wrap=document.createElement("div"); wrap.className="minor-row";
+  const inp=document.createElement("input"); inp.type="text"; inp.placeholder="Minor's full name"; inp.value=value;
+  const rm=document.createElement("button"); rm.type="button"; rm.className="minor-remove"; rm.setAttribute("aria-label","Remove this minor"); rm.textContent="\u00d7";
+  rm.addEventListener("click", ()=>wrap.remove());
+  wrap.appendChild(inp); wrap.appendChild(rm);
+  $("#minorRows").appendChild(wrap); inp.focus();
+}
+$("#addMinor").addEventListener("click", ()=>addMinorRow());
+function collectMinors(){ return $$("#minorRows input").map(i=>i.value.trim()).filter(Boolean); }
+
+/* ---------- referral: reveal free-text on "Other" ---------- */
+$("#referral").addEventListener("change", e=>{
+  $("#referralOtherWrap").style.display = e.target.value==="Other" ? "block" : "none";
+});
+
+/* ---------- validation + submit ---------- */
+const form = $("#waiver-form");
+function fieldEl(name){ return $(`[name=${name}]`).closest(".field"); }
+function setErr(name, on){ const f=fieldEl(name); if(f) f.classList.toggle("invalid", on); }
+
+function validate(){
+  let ok=true; const req=["fullName","dob","phone","email","emgName","emgPhone","printedName"];
+  req.forEach(n=>{ const v=$(`[name=${n}]`).value.trim(); const bad=!v; setErr(n,bad); if(bad) ok=false; });
+  const email=$("[name=email]").value.trim();
+  if(email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){ setErr("email",true); ok=false; }
+  const ackRead=$("[name=ackRead]").checked, ackAge=$("[name=ackAge]").checked;
+  if(!ackRead||!ackAge){ toast("Please check both acknowledgment boxes."); ok=false; }
+  if(!Sig.isSigned()){ $("#sigWrap").classList.add("invalid"); $("#sigErr").style.display="block"; ok=false; } else { $("#sigErr").style.display="none"; }
+  return ok;
+}
+
+let lastRecord=null;
+
+form.addEventListener("submit", async e=>{
+  e.preventDefault();
+  if(!validate()){ toast("A few fields still need attention."); const f=$(".field.invalid"); if(f) f.scrollIntoView({behavior:"smooth",block:"center"}); return; }
+  const btn=$("#submitBtn"); btn.disabled=true; btn.textContent="Saving...";
+
+  const g=n=>$(`[name=${n}]`).value.trim();
+  const rec={
+    id: "w_"+Date.now().toString(36)+Math.random().toString(36).slice(2,6),
+    submittedAt: Date.now(),
+    fullName:g("fullName"), dob:g("dob"), phone:g("phone"), email:g("email"), address:g("address"),
+    emgName:g("emgName"), emgRel:g("emgRel"), emgPhone:g("emgPhone"),
+    media: $("[name=mediaOptOut]").checked ? "no" : "yes",
+    minors: collectMinors(), printedName:g("printedName"), signedDate:g("signedDate"),
+    referral: (function(){ const r=$("[name=referral]").value; return r==="Other" ? ("Other: "+(g("referralOther")||"unspecified")) : r; })(),
+    newsletter: $("[name=newsletter]").checked,
+    signature: Sig.dataUrl()
+  };
+
+  try{
+    const pdf = buildPDF(rec);
+    rec.pdf = pdf.output("datauristring");
+    lastRecord = rec;
+    await DB.submit(rec);
+    // Supabase sends email server-side on insert; otherwise use Web3Forms
+    if (!USE_SB) emailCopy(rec).catch(()=>{});
+    const first = rec.fullName.split(" ")[0];
+    const delivered = USE_SB || CONFIG.web3formsKey;
+    $("#confirmMsg").textContent = delivered
+      ? `Thank you, ${first}. Your signed waiver has been sent to True Wild Coastal. Keep a copy for yourself below.`
+      : `Thank you, ${first}. Your signed waiver is complete. Download a copy for your records below.`;
+    show("confirm");
+  }catch(err){
+    console.error(err); toast("Something went wrong saving your waiver. Please try again.");
+  }finally{
+    btn.disabled=false; btn.textContent="Sign and submit waiver";
+  }
+});
+
+/* ---------- PDF builder ---------- */
+function buildPDF(rec){
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit:"pt", format:"letter" });
+  const W=612, M=54, CW=W-M*2; let y=0;
+  const TIDAL=[13,43,46], AMBER=[232,168,76], DIM=[90,110,107], INK=[28,42,44];
+
+  function page(){ doc.addPage(); y=64; header(true); }
+  function need(h){ if(y+h>720) page(); }
+  function header(cont){
+    doc.setFillColor(...TIDAL); doc.rect(0,0,W,4,"F");
+    doc.setFont("times","bold"); doc.setFontSize(15); doc.setTextColor(...TIDAL);
+    doc.text("TRUE WILD COASTAL", M, 40);
+    doc.setFont("helvetica","normal"); doc.setFontSize(7.5); doc.setTextColor(...AMBER);
+    doc.text("NATURE, UNFILTERED.", M, 52);
+    doc.setTextColor(...DIM);
+    doc.text("Squamish, BC · truewildcoastal.com", W-M, 40, {align:"right"});
+    doc.setDrawColor(...AMBER); doc.setLineWidth(0.8); doc.line(M,60,W-M,60);
+    y = cont ? 78 : 82;
+    if(!cont){
+      doc.setFont("times","italic"); doc.setFontSize(13); doc.setTextColor(...INK);
+      doc.text("Participant Waiver, Release of Liability & Media Consent", M, y); y+=22;
+    }
+  }
+  function h(t){ need(30); doc.setFont("helvetica","bold"); doc.setFontSize(9.5); doc.setTextColor(...TIDAL);
+    doc.text(t.toUpperCase(), M, y); doc.setDrawColor(...AMBER); doc.setLineWidth(0.6); doc.line(M,y+4,M+CW,y+4); y+=16; }
+  function p(t,opt={}){ doc.setFont("helvetica",opt.bold?"bold":"normal"); doc.setFontSize(9); doc.setTextColor(...(opt.bold?INK:[70,84,82]));
+    const lines=doc.splitTextToSize(t,CW); lines.forEach(l=>{ need(13); doc.text(l,M,y); y+=12.5; }); y+=5; }
+  function li(t){ doc.setFont("helvetica","normal"); doc.setFontSize(9); doc.setTextColor(70,84,82);
+    const lines=doc.splitTextToSize(t,CW-16);
+    lines.forEach((l,i)=>{ need(13); if(i===0){ doc.setFillColor(...AMBER); doc.rect(M+2,y-6,4,4,"F"); } doc.text(l,M+14,y); y+=12.5; }); y+=2; }
+  function kv(pairs){
+    const colW=CW/2;
+    for(let i=0;i<pairs.length;i+=2){
+      need(30);
+      [0,1].forEach(c=>{
+        const pr=pairs[i+c]; if(!pr) return;
+        const x=M+c*colW;
+        doc.setFont("helvetica","bold"); doc.setFontSize(7); doc.setTextColor(...DIM);
+        doc.text(pr[0].toUpperCase(), x, y);
+        doc.setFont("helvetica","normal"); doc.setFontSize(9.5); doc.setTextColor(...INK);
+        doc.text(pr[1]||"-", x, y+13);
+      });
+      y+=32;
+    }
+    y+=2;
+  }
+
+  header(false);
+
+  h("Participant");
+  kv([["Full name",rec.fullName],["Date of birth",rec.dob],
+      ["Phone",rec.phone],["Email",rec.email],
+      ["Address",rec.address||"-"],["Signed",rec.signedDate]]);
+  h("Emergency contact");
+  kv([["Name",rec.emgName],["Relationship",rec.emgRel||"-"],["Phone",rec.emgPhone],["",""]]);
+
+  h("Description of activity");
+  p("True Wild Coastal runs private marine expeditions on Howe Sound and surrounding coastal waters from Squamish, BC. Activities may include wildlife and whale watching, photography, fishing charters, freediving, spearfishing, and kayaking, aboard a 20-foot welded aluminum centre console vessel in open coastal waters.");
+
+  h("Assumption of risk");
+  p("The participant acknowledges that participation involves inherent risks, dangers, and hazards including but not limited to:");
+  ["Rough, unpredictable, or rapidly changing sea and weather conditions",
+   "Capsizing, swamping, or falling overboard",
+   "Contact with marine wildlife such as whales, seals, and sea lions",
+   "Hypothermia, cold water exposure, and drowning",
+   "Injury from vessel motion, equipment, or gear",
+   "Remote locations with limited access to emergency services",
+   "Risks specific to freediving, spearfishing, or water entry, where applicable",
+   "Equipment failure or malfunction"].forEach(li);
+  p("The participant freely and voluntarily accepts and assumes all such risks, both known and unknown, arising from participation.",{bold:true});
+
+  h("Release of liability and waiver of claims");
+  p("In consideration of being permitted to participate, the participant, on behalf of themselves, their heirs, executors, administrators, and assigns, releases, waives, discharges, and agrees not to sue True Wild Coastal, its owners, guides, crew, employees, agents, and contractors (the Released Parties) from any and all liability, claims, demands, or causes of action for any loss, damage, injury, or death sustained while participating, whether caused by the negligence of the Released Parties or otherwise. The participant understands this release includes claims based on negligence and that substantial legal rights are being given up.");
+
+  h("Indemnification");
+  p("The participant agrees to indemnify and hold harmless the Released Parties from any loss, liability, damage, cost, or expense, including legal fees, they may incur due to participation, including claims brought by third parties arising from the participant's conduct.");
+
+  h("Participant responsibilities");
+  ["Follow all safety instructions and directions from the guide at all times",
+   "Wear a personal flotation device when instructed",
+   "Disclose any medical conditions, allergies, medications, or limitations",
+   "Behave responsibly toward self, other participants, wildlife, and the vessel",
+   "Comply with Transport Canada requirements and the Species at Risk Act"].forEach(li);
+
+  h("Media and photography consent");
+  p(rec.media==="yes"
+    ? "CONSENT GRANTED. The participant consents to True Wild Coastal using photographs and video of them for marketing, social media, and promotional purposes."
+    : "CONSENT DECLINED. The participant does not consent to the use of their image for promotional purposes.",{bold:true});
+  p("Regardless of the above, the participant understands expedition footage may be used for documentary, editorial, or film purposes and that participation may be captured incidentally, and waives claims related to such incidental capture.");
+
+  h("Governing law");
+  p("This agreement is governed by the laws of British Columbia and the federal laws of Canada. Any dispute is subject to the exclusive jurisdiction of the courts of British Columbia.");
+
+  h("Acknowledgment");
+  p("By signing below, the participant confirms they have read and understood this agreement, are agreeing freely, are 19 or older or a parent/guardian of a minor participant, and understand they are waiving significant legal rights including the right to sue for negligence.");
+  if(rec.minors && rec.minors.length) p("This waiver is signed by "+rec.printedName+" on behalf of themselves and the following minor participant(s): "+rec.minors.join(", ")+". "+rec.printedName+" agrees to all terms of this agreement for each minor listed above.",{bold:true});
+
+  need(120); y+=6;
+  doc.setDrawColor(200,200,200); doc.setLineWidth(0.5);
+  try{ doc.addImage(rec.signature,"PNG",M,y,180,64); }catch(e){}
+  doc.line(M,y+66,M+200,y+66);
+  doc.setFont("helvetica","normal"); doc.setFontSize(7.5); doc.setTextColor(...DIM);
+  doc.text("SIGNATURE", M, y+78);
+  doc.setFont("helvetica","bold"); doc.setFontSize(10); doc.setTextColor(...INK);
+  doc.text(rec.printedName, M+240, y+40);
+  doc.line(M+240,y+50,M+CW,y+50);
+  doc.setFont("helvetica","normal"); doc.setFontSize(7.5); doc.setTextColor(...DIM);
+  doc.text("PRINTED NAME · "+rec.signedDate, M+240, y+62);
+
+  const pages=doc.internal.getNumberOfPages();
+  for(let i=1;i<=pages;i++){ doc.setPage(i); doc.setFont("helvetica","normal"); doc.setFontSize(7); doc.setTextColor(...DIM);
+    doc.text(`True Wild Coastal · legally binding agreement · page ${i} of ${pages}`, W/2, 760, {align:"center"}); }
+  return doc;
+}
+
+function pdfName(rec){ const last=(rec.fullName.trim().split(" ").pop()||"waiver"); return `TrueWild_Waiver_${last}_${rec.signedDate}.pdf`.replace(/\s+/g,""); }
+function dataUriToDoc(rec){ const {jsPDF}=window.jspdf; return null; }
+
+/* ---------- date helper: 2026-07-01 -> 260701 ---------- */
+function yymmdd(iso){ const [y,m,d]=(iso||"").split("-"); return (y?y.slice(2):"")+(m||"")+(d||""); }
+
+/* ---------- email via Web3Forms (optional) ---------- */
+async function emailCopy(rec){
+  if(!CONFIG.web3formsKey) return;
+  const fd=new FormData();
+  fd.append("access_key", CONFIG.web3formsKey);
+  fd.append("subject", `WAIVER ${yymmdd(rec.signedDate)} ${rec.fullName}`);
+  fd.append("from_name", "True Wild Coastal Waivers");
+  fd.append("Participant", rec.fullName);
+  fd.append("Email", rec.email);
+  fd.append("Phone", rec.phone);
+  fd.append("Emergency contact", `${rec.emgName} (${rec.emgRel||"n/a"}) ${rec.emgPhone}`);
+  fd.append("Media consent", rec.media==="yes"?"Yes":"No (do not use image)");
+  if(rec.minors && rec.minors.length) fd.append("Signing for minors", rec.minors.join(", "));
+  fd.append("How did you hear", rec.referral||"Not provided");
+  fd.append("Newsletter opt-in", rec.newsletter?"Yes":"No");
+  fd.append("Signed", rec.signedDate);
+  try{
+    const b64=(rec.pdf||"").split(",")[1];
+    if(b64){ const bin=atob(b64); const arr=new Uint8Array(bin.length); for(let i=0;i<bin.length;i++)arr[i]=bin.charCodeAt(i);
+      fd.append("attachment", new Blob([arr],{type:"application/pdf"}), pdfName(rec)); }
+  }catch(e){}
+  await fetch("https://api.web3forms.com/submit",{method:"POST",body:fd});
+}
+
+/* ---------- confirm actions ---------- */
+$("#dlBtn").addEventListener("click", ()=>{ if(!lastRecord) return; buildPDF(lastRecord).save(pdfName(lastRecord)); });
+$("#doneBtn").addEventListener("click", ()=>{ form.reset(); Sig.reset(); $("#minorRows").innerHTML=""; $("#referralOtherWrap").style.display="none"; $("[name=printedName]").dataset.touched=""; $("[name=signedDate]").value=new Date().toISOString().slice(0,10); show("sign"); });
+
+/* ---------- staff / admin ---------- */
+$("#staffLink").addEventListener("click", e=>{ e.preventDefault(); openPw(); });
+function openPw(){
+  $("#pwBg").classList.add("show"); $("#pwInput").value=""; $("#pwErr").style.display="none";
+  if(USE_SB){
+    $("#pwEmailWrap").style.display="block";
+    $("#pwPrompt").textContent="Sign in with your True Wild Coastal staff account.";
+    $("#pwErr").textContent="Sign in failed. Check your email and password.";
+    setTimeout(()=>$("#pwEmail").focus(),50);
+  } else {
+    $("#pwEmailWrap").style.display="none";
+    $("#pwPrompt").textContent="Enter the dashboard password to view signed waivers.";
+    $("#pwErr").textContent="Incorrect password.";
+    setTimeout(()=>$("#pwInput").focus(),50);
+  }
+}
+$("#pwCancel").addEventListener("click", ()=>$("#pwBg").classList.remove("show"));
+$("#pwGo").addEventListener("click", tryPw);
+$("#pwInput").addEventListener("keydown", e=>{ if(e.key==="Enter") tryPw(); });
+$("#pwEmail").addEventListener("keydown", e=>{ if(e.key==="Enter") $("#pwInput").focus(); });
+async function tryPw(){
+  if(USE_SB){
+    const btn=$("#pwGo"); btn.disabled=true; btn.textContent="Signing in...";
+    try{
+      const { error } = await sb.auth.signInWithPassword({ email:$("#pwEmail").value.trim(), password:$("#pwInput").value });
+      if(error){ $("#pwErr").style.display="block"; }
+      else { $("#pwBg").classList.remove("show"); enterAdmin(); }
+    }catch(e){ $("#pwErr").style.display="block"; }
+    finally{ btn.disabled=false; btn.textContent="Enter"; }
+    return;
+  }
+  if($("#pwInput").value===CONFIG.adminPassword){ $("#pwBg").classList.remove("show"); enterAdmin(); }
+  else $("#pwErr").style.display="block";
+}
+$("#signViewBtn").addEventListener("click", async ()=>{ if(USE_SB){ try{ await sb.auth.signOut(); }catch(e){} } location.hash=""; show("sign"); });
+
+let cache=[];
+async function enterAdmin(){
+  show("admin");
+  const warn=$("#configWarn");
+  if(USE_SB){ warn.style.display="none"; }
+  else if(DB.cloud){ warn.style.display="none"; }
+  else { warn.style.display="block"; warn.innerHTML="<b>Local device storage.</b> Waivers are saved in this browser only. Add your Supabase keys (see setup notes) for a central dashboard across every device."; }
+  try{
+    cache = await DB.all();
+  }catch(e){ cache=[]; toast("Could not load waivers. Please sign in again."); }
+  render();
+}
+function fmtDate(ts){ return new Date(ts).toLocaleDateString("en-CA",{month:"short",day:"numeric",year:"numeric"}); }
+function render(){
+  const q=$("#search").value.toLowerCase().trim();
+  const list = cache.filter(r=>!q || [r.fullName,r.email].join(" ").toLowerCase().includes(q));
+  $("#statTotal").textContent=cache.length;
+  $("#statMedia").textContent=cache.filter(r=>r.media==="yes").length;
+  const wk=Date.now()-6048e5; $("#statRecent").textContent=cache.filter(r=>r.submittedAt>wk).length;
+  const tb=$("#rows"); tb.innerHTML="";
+  $("#emptyState").style.display = cache.length? "none":"block";
+  list.forEach(r=>{
+    const tr=document.createElement("tr");
+    tr.innerHTML=`
+      <td><div class="nm">${esc(r.fullName)}</div><div style="font-size:12px">${esc(r.email)}</div></td>
+      <td class="hide-sm mono">${esc(r.signedDate)}</td>
+      <td><span class="pill ${r.media==="yes"?"yes":"no"}">${r.media==="yes"?"Yes":"No"}</span></td>
+      <td><div class="row-act">
+        <button class="icon-btn" data-view="${r.id}">View</button>
+        <button class="icon-btn danger" data-del="${r.id}">Delete</button>
+      </div></td>`;
+    tb.appendChild(tr);
+  });
+  $$("[data-view]").forEach(b=>b.addEventListener("click",()=>openDetail(b.dataset.view)));
+  $$("[data-del]").forEach(b=>b.addEventListener("click",()=>delRec(b.dataset.del)));
+}
+$("#search").addEventListener("input", render);
+function esc(s){ return (s==null?"":String(s)).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+
+function openDetail(id){
+  const r=cache.find(x=>x.id===id); if(!r) return;
+  $("#detailName").textContent=r.fullName;
+  $("#detailWhen").textContent="Signed "+fmtDate(r.submittedAt)+"  ·  "+r.signedDate;
+  $("#detailList").innerHTML=[
+    ["Email",r.email],["Phone",r.phone],["Date of birth",r.dob],["Address",r.address||"-"],
+    ["Emergency",`${r.emgName} · ${r.emgRel||"-"} · ${r.emgPhone}`],
+    ["Media consent",r.media==="yes"?"Yes":"No"],
+    ["How did you hear",r.referral||"Not provided"],
+    ["Newsletter",r.newsletter?"Yes":"No"],
+    ...(r.minors&&r.minors.length?[["Signing for minors",r.minors.join(", ")]]:[])
+  ].map(([k,v])=>`<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join("");
+  $("#detailSig").innerHTML = r.signature?`<div class="sig-preview"><img src="${r.signature}"/></div>`:"";
+  $("#detailDl").onclick=()=>buildPDF(r).save(pdfName(r));
+  $("#detailBg").classList.add("show");
+}
+$("#detailClose").addEventListener("click",()=>$("#detailBg").classList.remove("show"));
+$("#detailBg").addEventListener("click",e=>{ if(e.target===$("#detailBg")) $("#detailBg").classList.remove("show"); });
+
+async function delRec(id){
+  const r=cache.find(x=>x.id===id);
+  if(!confirm(`Delete the waiver for ${r?r.fullName:"this guest"}? This cannot be undone.`)) return;
+  await DB.remove(id); cache=cache.filter(x=>x.id!==id); render(); toast("Waiver deleted.");
+}
+
+$("#exportBtn").addEventListener("click",()=>{
+  if(!cache.length){ toast("Nothing to export yet."); return; }
+  const cols=["fullName","email","phone","dob","address","emgName","emgRel","emgPhone","media","minors","referral","newsletter","printedName","signedDate"];
+  const head=cols.join(",");
+  const rows=cache.map(r=>cols.map(c=>{ const raw=Array.isArray(r[c])?r[c].join("; "):(r[c]==null?"":r[c]); return `"${String(raw).replace(/"/g,'""')}"`; }).join(","));
+  const csv=[head,...rows].join("\n");
+  const blob=new Blob([csv],{type:"text/csv"});
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
+  a.download=`truewild_waivers_${new Date().toISOString().slice(0,10)}.csv`; a.click();
+});
+
+/* ---------- deep link ---------- */
+if(location.hash==="#admin") openPw();
+window.addEventListener("hashchange",()=>{ if(location.hash==="#admin") openPw(); });
+</script>
+</body>
+</html>

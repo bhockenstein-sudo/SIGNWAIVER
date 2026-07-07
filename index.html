@@ -539,7 +539,7 @@ canvas#sig{display:block;width:100%;height:190px;touch-action:none;cursor:crossh
     <div class="tbl-scroll">
       <table class="tbl">
         <thead><tr>
-          <th>Participant</th><th class="hide-sm">Signed</th><th>Media</th><th></th>
+          <th>Participant</th><th class="hide-sm">Signed</th><th>Complete</th><th>Media release</th><th></th>
         </tr></thead>
         <tbody id="rows"></tbody>
       </table>
@@ -1036,9 +1036,16 @@ function render(){
   $("#emptyState").style.display = cache.length? "none":"block";
   list.forEach(r=>{
     const tr=document.createElement("tr");
+    const complete = !!(r.ackRead && r.ackAge && r.signature);
+    const missing = [];
+    if(!r.ackRead) missing.push("agreement box");
+    if(!r.ackAge) missing.push("age or guardian box");
+    if(!r.signature) missing.push("signature");
+    const compTitle = complete ? "Both acknowledgments and signature provided" : ("Missing: "+missing.join(", "));
     tr.innerHTML=`
       <td><div class="nm">${esc(r.fullName)}</div><div style="font-size:12px">${esc(r.email)}</div></td>
       <td class="hide-sm mono">${esc(r.signedDate)}</td>
+      <td><span class="pill ${complete?"yes":"no"}" title="${esc(compTitle)}">${complete?"Complete":"Missing"}</span></td>
       <td><span class="pill ${r.media==="yes"?"yes":"no"}">${r.media==="yes"?"Yes":"No"}</span></td>
       <td><div class="row-act">
         <button class="icon-btn" data-view="${r.id}">View</button>
